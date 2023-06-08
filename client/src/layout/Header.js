@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import CheckAuth from './CheckAuth';
+import AuthContext from '../context/AuthContext';
 
 const Header = () => {
+    const { isAuthenticated } = useContext(AuthContext);
+
     return (
         <header id='header'>
             <nav>
@@ -12,24 +14,27 @@ const Header = () => {
                             Home
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink end to='/profile'>
-                            Profile
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink end to='/login'>
-                            Login
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink end to='/register'>
-                            Register
-                        </NavLink>
-                    </li>
-                    <li>
-                        <CheckAuth />
-                    </li>
+                    {isAuthenticated && (
+                        <li>
+                            <NavLink end to='/profile'>
+                                Profile
+                            </NavLink>
+                        </li>
+                    )}
+                    {!isAuthenticated && (
+                        <>
+                            <li>
+                                <NavLink end to='/login'>
+                                    Login
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink end to='/register'>
+                                    Register
+                                </NavLink>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </nav>
         </header>
