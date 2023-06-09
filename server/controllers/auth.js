@@ -3,11 +3,16 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const signTokens = (res, id) => {
-    const accessToken = jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '5m' });
-    const refreshToken = jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '1d' });
+    const ACCESS_EXPIRY_TIME = 5 * 60;
+    const REFRESH_EXPIRY_TIME = 24 * 60 * 60;
+    // const ACCESS_EXPIRY_TIME = 10;
+    // const REFRESH_EXPIRY_TIME = 30;
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'lax' });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'lax' });
+    const accessToken = jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, { expiresIn: ACCESS_EXPIRY_TIME });
+    const refreshToken = jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: REFRESH_EXPIRY_TIME });
+
+    res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'lax', maxAge: ACCESS_EXPIRY_TIME * 1000 });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'lax', maxAge: REFRESH_EXPIRY_TIME * 1000 });
 };
 
 const register = async (req, res) => {
@@ -52,4 +57,12 @@ const refresh = (req, res) => {
     });
 };
 
-module.exports = { register, login, refresh };
+const logout = (req, res) => {
+    if (!req.cookies?.accessToken && !req.cookies?.refreshToken) return res.sendStatus(204);
+
+    res.clearCookie('accessToken', { httpOnly: true });
+    res.clearCookie('refreshToken', { httpOnly: true });
+    res.sendStatus(200);
+};
+
+module.exports = { register, login, refresh, logout };

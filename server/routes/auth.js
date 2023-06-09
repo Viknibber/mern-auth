@@ -9,4 +9,6 @@ router.get('/', controllers.refresh);
 router.post('/login', schemas.login, controllers.login);
 router.post('/register', schemas.register, controllers.register);
 
+router.delete('/', controllers.logout);
+
 module.exports = router;

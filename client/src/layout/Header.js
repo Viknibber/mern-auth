@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import Logout from '../components/Logout';
 
 const Header = () => {
     const { isAuthenticated } = useContext(AuthContext);
@@ -15,11 +16,16 @@ const Header = () => {
                         </NavLink>
                     </li>
                     {isAuthenticated && (
-                        <li>
-                            <NavLink end to='/profile'>
-                                Profile
-                            </NavLink>
-                        </li>
+                        <>
+                            <li>
+                                <NavLink end to='/profile'>
+                                    Profile
+                                </NavLink>
+                            </li>
+                            <li>
+                                <Logout />
+                            </li>
+                        </>
                     )}
                     {!isAuthenticated && (
                         <>

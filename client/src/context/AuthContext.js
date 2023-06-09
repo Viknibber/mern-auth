@@ -12,6 +12,7 @@ const AuthReducer = (state, { type }) => {
         case 'REFRESH_FAILED':
         case 'LOGIN_FAILED':
         case 'REGISTER_FAILED':
+        case 'LOGOUT_SUCCESS':
             return { ...state, isAuthenticated: false, isLoading: false };
         case 'START_LOADING':
             return { ...state, isLoading: true };
@@ -78,8 +79,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const logout = () => {
+        dispatch({ type: 'START_LOADING' });
+        axios.delete('/api/auth');
+        dispatch({ type: 'LOGOUT_SUCCESS' });
+    };
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isLoading, login, register }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ isAuthenticated, isLoading, login, register, logout }}>
+            {children}
+        </AuthContext.Provider>
     );
 };
 
